@@ -183,6 +183,30 @@ app.post("/api/progress", async (req, res) => {
   }
 });
 
+app.get("/api/data", async (req, res) => {
+  try {
+    const sessionsResult = await pool.query(`
+      SELECT *
+      FROM sessions
+      ORDER BY created_at DESC
+    `);
+
+    const progressResult = await pool.query(`
+      SELECT *
+      FROM progress_logs
+      ORDER BY saved_at DESC
+    `);
+
+    res.json({
+      sessions: sessionsResult.rows,
+      progressLogs: progressResult.rows,
+    });
+  } catch (error) {
+    console.error("Fetch data error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
