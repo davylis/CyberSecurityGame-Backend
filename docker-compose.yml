@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
 
   backend:
     build: .
@@ -22,10 +22,9 @@ services:
     depends_on:
       - db
     environment:
-      PORT: ${PORT}
       DATABASE_URL: ${DATABASE_URL}
     ports:
-      - "3000:3000"
+      - "${BACKEND_PORT}:3000"
 
 volumes:
   postgres_data:
