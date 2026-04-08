@@ -129,6 +129,31 @@ app.post("/api/progress", async (req, res) => {
         $15,$16,$17,$18,$19,$20,$21,
         $22,$23,NOW()
       )
+      ON CONFLICT (session_id)
+      DO UPDATE SET
+        points = EXCLUDED.points,
+        current_task = EXCLUDED.current_task,
+        case1_score = EXCLUDED.case1_score,
+        case2_score = EXCLUDED.case2_score,
+        case3_score = EXCLUDED.case3_score,
+        case4_score = EXCLUDED.case4_score,
+        case5_score = EXCLUDED.case5_score,
+        case6_score = EXCLUDED.case6_score,
+        case7_score = EXCLUDED.case7_score,
+        case8_score = EXCLUDED.case8_score,
+        case9_score = EXCLUDED.case9_score,
+        case10_score = EXCLUDED.case10_score,
+        case11_score = EXCLUDED.case11_score,
+        case5_choices = EXCLUDED.case5_choices,
+        case6_choices = EXCLUDED.case6_choices,
+        case7_choices = EXCLUDED.case7_choices,
+        case8_choices = EXCLUDED.case8_choices,
+        case9_choices = EXCLUDED.case9_choices,
+        case10_choices = EXCLUDED.case10_choices,
+        case11_choices = EXCLUDED.case11_choices,
+        elapsed_seconds = EXCLUDED.elapsed_seconds,
+        status = EXCLUDED.status,
+        saved_at = NOW()
       `,
       [
         sessionId,
