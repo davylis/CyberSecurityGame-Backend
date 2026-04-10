@@ -232,6 +232,37 @@ app.get("/api/data", async (req, res) => {
   }
 });
 
+app.post("/api/feedback", async (req, res) => {
+  try {
+    const { sessionId, feedback } = req.body;
+
+    if (!sessionId) {
+      return res.status(400).json({ error: "sessionId is required" });
+    }
+
+    const result = await pool.query(
+      `
+      UPDATE sessions
+      SET
+        feedback = $1,
+        updated_at = NOW()
+      WHERE session_id = $2
+      RETURNING session_id
+      `,
+      [feedback || null, sessionId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error("Save feedback error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {

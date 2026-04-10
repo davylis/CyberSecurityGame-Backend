@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS sessions (
   latest_points INTEGER DEFAULT 0,
   latest_task INTEGER DEFAULT 0,
   latest_status TEXT DEFAULT 'in_progress',
+  feedback TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP,
   completed_at TIMESTAMP
@@ -16,7 +17,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 CREATE TABLE IF NOT EXISTS progress_logs (
   id SERIAL PRIMARY KEY,
-  session_id UUID NOT NULL,
+  session_id UUID NOT NULL UNIQUE,
   points INTEGER DEFAULT 0,
   current_task INTEGER DEFAULT 0,
 
