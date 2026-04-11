@@ -17,8 +17,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 
 CREATE TABLE IF NOT EXISTS progress_logs (
   id SERIAL PRIMARY KEY,
-  session_id UUID NOT NULL,
-  player_name TEXT,
+  session_id UUID NOT NULL UNIQUE,
   points INTEGER DEFAULT 0,
   current_task INTEGER DEFAULT 0,
 
@@ -47,28 +46,7 @@ CREATE TABLE IF NOT EXISTS progress_logs (
   saved_at TIMESTAMP NOT NULL DEFAULT NOW(),
 
   CONSTRAINT fk_session
-    FOREIGN KEY (session_id)
+    FOREIGN KEY(session_id)
     REFERENCES sessions(session_id)
     ON DELETE CASCADE
 );
-
-CREATE OR REPLACE FUNCTION set_progress_log_player_name()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF NEW.player_name IS NULL THEN
-    SELECT s.player_name
-    INTO NEW.player_name
-    FROM sessions s
-    WHERE s.session_id = NEW.session_id;
-  END IF;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS trg_set_progress_log_player_name ON progress_logs;
-
-CREATE TRIGGER trg_set_progress_log_player_name
-BEFORE INSERT ON progress_logs
-FOR EACH ROW
-EXECUTE FUNCTION set_progress_log_player_name();
